@@ -2,10 +2,14 @@
 	"name": "job-queue-poc",
 	"private": true,
 	"type": "module",
-	"workspaces": ["server"],
+	"workspaces": [
+		"server"
+	],
 	"scripts": {
 		"build": "react-router build",
-		"dev": "react-router dev",
+		"dev:client": "react-router dev",
+		"dev:server": "npm run dev -w server",
+		"dev": "concurrently -c 'blue,green' -n 'client,server' npm:dev:client npm:dev:server",
 		"start": "react-router-serve ./build/server/index.js",
 		"typecheck": "react-router typegen && tsc"
 	},
@@ -23,6 +27,7 @@
 		"@types/node": "^22",
 		"@types/react": "^19.1.13",
 		"@types/react-dom": "^19.1.9",
+		"concurrently": "^9.2.1",
 		"tailwindcss": "^4.1.13",
 		"typescript": "^5.9.2",
 		"vite": "^7.1.7",
