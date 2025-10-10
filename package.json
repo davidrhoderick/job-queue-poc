@@ -11,11 +11,15 @@
 		"dev:server": "npm run dev -w server",
 		"dev": "concurrently -c 'blue,green' -n 'client,server' npm:dev:client npm:dev:server",
 		"start": "react-router-serve ./build/server/index.js",
-		"typecheck": "react-router typegen && tsc"
+		"typecheck": "react-router typegen && tsc",
+		"codegen:server": "npm run codegen -w server"
 	},
 	"dependencies": {
+		"@eddeee888/gcg-typescript-resolver-files": "^0.13.0",
+		"@graphql-codegen/cli": "^6.0.0",
 		"@react-router/node": "^7.9.2",
 		"@react-router/serve": "^7.9.2",
+		"graphql-scalars": "^1.24.2",
 		"isbot": "^5.1.31",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",

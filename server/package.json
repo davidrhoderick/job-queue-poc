@@ -17,6 +17,7 @@
 		"graphql-yoga": "^5.16.0"
 	},
 	"devDependencies": {
+		"@parcel/watcher": "^2.5.1",
 		"tsx": "^4.20.6",
 		"typescript": "^5.9.3"
 	}

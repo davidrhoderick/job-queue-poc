@@ -1,23 +1,8 @@
-import { createServer } from 'node:http';
-import { createYoga, createSchema } from 'graphql-yoga';
-
-const typeDefs = /* GraphQL */ `
-  type Query {
-    hello: String!
-  }
-`;
-
-const resolvers = {
-  Query: {
-    hello: () => 'world 🌍'
-  }
-};
-
-const yoga = createYoga({
-  schema: createSchema({ typeDefs, resolvers })
-});
-
-const server = createServer(yoga);
-server.listen(4000, () => {
-  console.log('🚀 Server ready at http://localhost:4000/graphql');
-});
+import { createYoga, createSchema } from 'graphql-yoga'
+import { createServer } from 'node:http'
+import { typeDefs } from './schema/typeDefs.generated'
+import { resolvers } from './schema/resolvers.generated'
+ 
+const yoga = createYoga({ schema: createSchema({ typeDefs, resolvers }) })
+const server = createServer(yoga)
+server.listen(3000)
