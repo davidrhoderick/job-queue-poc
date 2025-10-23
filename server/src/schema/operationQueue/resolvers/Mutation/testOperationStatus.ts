@@ -1,5 +1,5 @@
 import { getJobState, queue } from "../Query/operationStatus";
-import type { MutationResolvers } from "./../../../types.generated";
+import type { MutationResolvers } from "../../../../generated/types.generated";
 export const testOperationStatus: NonNullable<
 	MutationResolvers["testOperationStatus"]
 > = async (_parent, { input: { duration, shouldFail } }) => {

@@ -1,0 +1,15 @@
+/* This file was automatically generated. DO NOT UPDATE MANUALLY. */
+import type { Resolvers } from "./types.generated";
+import { operationStatus as Query_operationStatus } from "./../schema/operationQueue/resolvers/Query/operationStatus";
+import { testOperationStatus as Mutation_testOperationStatus } from "./../schema/operationQueue/resolvers/Mutation/testOperationStatus";
+import { Data } from "./../schema/operationQueue/resolvers/Data";
+import { OperationStatus } from "./../schema/operationQueue/resolvers/OperationStatus";
+import { UserError } from "./../schema/operationQueue/resolvers/UserError";
+export const resolvers: Resolvers = {
+	Query: { operationStatus: Query_operationStatus },
+	Mutation: { testOperationStatus: Mutation_testOperationStatus },
+
+	Data: Data,
+	OperationStatus: OperationStatus,
+	UserError: UserError,
+};

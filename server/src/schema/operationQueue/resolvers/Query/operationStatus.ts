@@ -1,7 +1,4 @@
-import type {
-	QueryResolvers,
-	OperationStatusEnum,
-} from "./../../../types.generated";
+import type { OperationStatusEnum, QueryResolvers } from "../../../../generated/types.generated";
 import { Job, Queue } from "bullmq";
 
 export const queue = new Queue("test", {
@@ -50,6 +47,4 @@ export const getJobState = async (id?: string) => {
 	return { id, status: "UNKNOWN" as OperationStatusEnum };
 };
 
-export const operationStatus: NonNullable<
-	QueryResolvers["operationStatus"]
-> = async (_parent, { id }) => getJobState(id);
+export const operationStatus: NonNullable<QueryResolvers['operationStatus']> = async (_parent, { id }) => getJobState(id);

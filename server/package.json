@@ -11,7 +11,8 @@
 		"dev:redis": "docker run -p 6379:6379 redis",
 		"build": "tsc -p tsconfig.json",
 		"start": "node dist/server.js",
-		"codegen": "graphql-codegen --watch"
+		"codegen": "graphql-codegen --watch",
+    "format": "biome format --fix"
 	},
 	"dependencies": {
 		"bullmq": "^5.61.0",
