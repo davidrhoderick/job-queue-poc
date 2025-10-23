@@ -1,7 +1,37 @@
+type Data {
+  anything: String!
+}
+
 type Mutation {
-  quote: Boolean!
+  testOperationStatus(input: TestOperationStatusInput): OperationStatus!
+}
+
+type OperationStatus {
+  data: Data
+  errors: [UserError]
+  id: String!
+  status: OperationStatusEnum!
+}
+
+enum OperationStatusEnum {
+  FAIL
+  IN_PROGRESS
+  NOT_FOUND
+  QUEUED
+  SUCCESS
+  UNKNOWN
 }
 
 type Query {
-  helloWorld: String!
+  operationStatus(id: String!): OperationStatus!
+}
+
+input TestOperationStatusInput {
+  duration: Int!
+  shouldFail: Boolean
+}
+
+type UserError {
+  message: String!
+  path: String
 }

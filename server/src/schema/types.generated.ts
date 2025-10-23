@@ -6,6 +6,9 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -15,14 +18,56 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type Data = {
+  __typename?: 'Data';
+  anything: Scalars['String']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  quote: Scalars['Boolean']['output'];
+  testOperationStatus: OperationStatus;
 };
+
+
+export type MutationtestOperationStatusArgs = {
+  input?: InputMaybe<TestOperationStatusInput>;
+};
+
+export type OperationStatus = {
+  __typename?: 'OperationStatus';
+  data?: Maybe<Data>;
+  errors?: Maybe<Array<Maybe<UserError>>>;
+  id: Scalars['String']['output'];
+  status: OperationStatusEnum;
+};
+
+export type OperationStatusEnum =
+  | 'FAIL'
+  | 'IN_PROGRESS'
+  | 'NOT_FOUND'
+  | 'QUEUED'
+  | 'SUCCESS'
+  | 'UNKNOWN';
 
 export type Query = {
   __typename?: 'Query';
-  helloWorld: Scalars['String']['output'];
+  operationStatus: OperationStatus;
+};
+
+
+export type QueryoperationStatusArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type TestOperationStatusInput = {
+  duration: Scalars['Int']['input'];
+  shouldFail?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UserError = {
+  __typename?: 'UserError';
+  message: Scalars['String']['output'];
+  path?: Maybe<Scalars['String']['output']>;
 };
 
 
@@ -98,30 +143,63 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
+  Data: ResolverTypeWrapper<Data>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
+  OperationStatus: ResolverTypeWrapper<Omit<OperationStatus, 'status'> & { status: ResolversTypes['OperationStatusEnum'] }>;
+  OperationStatusEnum: ResolverTypeWrapper<'QUEUED' | 'IN_PROGRESS' | 'SUCCESS' | 'FAIL' | 'NOT_FOUND' | 'UNKNOWN'>;
+  Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
+  TestOperationStatusInput: TestOperationStatusInput;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  UserError: ResolverTypeWrapper<UserError>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Mutation: Record<PropertyKey, never>;
-  Boolean: Scalars['Boolean']['output'];
-  Query: Record<PropertyKey, never>;
+  Data: Data;
   String: Scalars['String']['output'];
+  Mutation: Record<PropertyKey, never>;
+  OperationStatus: OperationStatus;
+  Query: Record<PropertyKey, never>;
+  TestOperationStatusInput: TestOperationStatusInput;
+  Int: Scalars['Int']['output'];
+  Boolean: Scalars['Boolean']['output'];
+  UserError: UserError;
+};
+
+export type DataResolvers<ContextType = any, ParentType extends ResolversParentTypes['Data'] = ResolversParentTypes['Data']> = {
+  anything?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  quote?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  testOperationStatus?: Resolver<ResolversTypes['OperationStatus'], ParentType, ContextType, Partial<MutationtestOperationStatusArgs>>;
 };
 
+export type OperationStatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationStatus'] = ResolversParentTypes['OperationStatus']> = {
+  data?: Resolver<Maybe<ResolversTypes['Data']>, ParentType, ContextType>;
+  errors?: Resolver<Maybe<Array<Maybe<ResolversTypes['UserError']>>>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['OperationStatusEnum'], ParentType, ContextType>;
+};
+
+export type OperationStatusEnumResolvers = EnumResolverSignature<{ FAIL?: any, IN_PROGRESS?: any, NOT_FOUND?: any, QUEUED?: any, SUCCESS?: any, UNKNOWN?: any }, ResolversTypes['OperationStatusEnum']>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  helloWorld?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  operationStatus?: Resolver<ResolversTypes['OperationStatus'], ParentType, ContextType, RequireFields<QueryoperationStatusArgs, 'id'>>;
+};
+
+export type UserErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserError'] = ResolversParentTypes['UserError']> = {
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  path?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
+  Data?: DataResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  OperationStatus?: OperationStatusResolvers<ContextType>;
+  OperationStatusEnum?: OperationStatusEnumResolvers;
   Query?: QueryResolvers<ContextType>;
+  UserError?: UserErrorResolvers<ContextType>;
 };
 

@@ -1,0 +1,37 @@
+extend type Query {
+	operationStatus(id: String!): OperationStatus!
+}
+
+extend type Mutation {
+	testOperationStatus(input: TestOperationStatusInput): OperationStatus!
+}
+
+input TestOperationStatusInput {
+	duration: Int!
+	shouldFail: Boolean
+}
+
+enum OperationStatusEnum {
+	QUEUED
+	IN_PROGRESS
+	SUCCESS
+	FAIL
+	NOT_FOUND
+  UNKNOWN
+}
+
+type UserError {
+	message: String!
+	path: String
+}
+
+type OperationStatus {
+	id: String!
+	status: OperationStatusEnum!
+	data: Data
+	errors: [UserError]
+}
+
+type Data {
+  anything: String!
+}
