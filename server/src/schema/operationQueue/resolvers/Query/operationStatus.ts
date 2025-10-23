@@ -5,7 +5,9 @@ const queue = new Queue("test", {
 	connection: { host: "localhost", port: 6379 },
 });
 
-export const operationStatus: NonNullable<QueryResolvers['operationStatus']> = async (_parent, { id }, _ctx) => {
+export const operationStatus: NonNullable<
+	QueryResolvers["operationStatus"]
+> = async (_parent, { id }) => {
 	const job = await Job.fromId(queue, id);
 
 	if (!job) return { id, status: "NOT_FOUND" };
