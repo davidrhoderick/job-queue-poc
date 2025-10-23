@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { graphql } from "~/gql";
 
 const TEST_OPERATION_STATUS = graphql(`
@@ -44,14 +44,17 @@ export default function Home() {
 		variables: { id: mutationData?.testOperationStatus.id ?? "no id to poll" },
 	});
 
+	const status = useMemo(
+		() =>
+			queryData?.operationStatus.status ||
+			mutationData?.testOperationStatus.status,
+		[mutationData, queryData],
+	);
+
 	useEffect(() => {
-		if (
-			queryData?.operationStatus.status === "IN_PROGRESS" ||
-			queryData?.operationStatus.status === "QUEUED"
-		)
-			startPolling(1500);
+		if (status === "IN_PROGRESS" || status === "QUEUED") startPolling(1500);
 		else stopPolling();
-	}, [queryData, startPolling, stopPolling]);
+	}, [status, startPolling, stopPolling]);
 
 	return (
 		<div>
@@ -66,6 +69,7 @@ export default function Home() {
 					<input
 						id="duration"
 						type="number"
+						min={0}
 						value={duration}
 						onChange={(e) => setDuration(Number(e.target.value))}
 						className="w-28 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -118,7 +122,7 @@ export default function Home() {
 													: "bg-yellow-100 text-yellow-700"
 										}`}
 									>
-										{queryData.operationStatus.status.replace("_", " ")}
+										{status?.replace("_", " ")}
 									</span>
 								</div>
 								{queryData.operationStatus.data && (
