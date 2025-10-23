@@ -7,11 +7,11 @@
 	"type": "module",
 	"main": "index.js",
 	"scripts": {
-		"dev": "npm run redis && tsx watch src/server.ts",
+		"dev:yoga": "tsx watch src/server.ts",
+		"dev:redis": "docker run -p 6379:6379 redis",
 		"build": "tsc -p tsconfig.json",
 		"start": "node dist/server.js",
-		"codegen": "graphql-codegen --watch",
-		"redis": "docker run -p 6379:6379 redis"
+		"codegen": "graphql-codegen --watch"
 	},
 	"dependencies": {
 		"bullmq": "^5.61.0",

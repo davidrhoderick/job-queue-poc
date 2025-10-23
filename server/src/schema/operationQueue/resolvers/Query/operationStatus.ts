@@ -1,41 +1,43 @@
-import type { QueryResolvers } from "./../../../types.generated";
+import type {
+	QueryResolvers,
+	OperationStatusEnum,
+} from "./../../../types.generated";
 import { Job, Queue } from "bullmq";
 
-const queue = new Queue("test", {
+export const queue = new Queue("test", {
 	connection: { host: "localhost", port: 6379 },
 });
 
-export const operationStatus: NonNullable<
-	QueryResolvers["operationStatus"]
-> = async (_parent, { id }) => {
+export const getJobState = async (id?: string) => {
+	if (!id) return { id: 'undefined', status: "NOT_FOUND" as OperationStatusEnum };
+
 	const job = await Job.fromId(queue, id);
 
-	if (!job) return { id, status: "NOT_FOUND" };
+	if (!job) return { id, status: "NOT_FOUND" as OperationStatusEnum };
 
 	const state = await job.getState();
-
 	// eslint-disable-next-line default-case
 	switch (state) {
 		case "waiting":
 			return {
 				id,
-				status: "QUEUED",
+				status: "QUEUED" as OperationStatusEnum,
 			};
 		case "active":
 			return {
 				id,
-				status: "IN_PROGRESS",
+				status: "IN_PROGRESS" as OperationStatusEnum,
 			};
 		case "completed":
 			return {
 				id,
-				status: "SUCCESS",
+				status: "SUCCESS" as OperationStatusEnum,
 				data: job.returnvalue,
 			};
 		case "failed":
 			return {
 				id,
-				status: "FAIL",
+				status: "FAIL" as OperationStatusEnum,
 				errors: [
 					{
 						message: job.failedReason,
@@ -44,5 +46,7 @@ export const operationStatus: NonNullable<
 			};
 	}
 
-	return { id, status: "UNKNOWN" };
+	return { id, status: "UNKNOWN" as OperationStatusEnum };
 };
+
+export const operationStatus: NonNullable<QueryResolvers['operationStatus']> = async (_parent, { id }) => getJobState(id);

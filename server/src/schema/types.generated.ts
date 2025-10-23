@@ -7,8 +7,8 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Mayb
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
+export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -30,7 +30,7 @@ export type Mutation = {
 
 
 export type MutationtestOperationStatusArgs = {
-  input?: InputMaybe<TestOperationStatusInput>;
+  input: TestOperationStatusInput;
 };
 
 export type OperationStatus = {
@@ -173,7 +173,7 @@ export type DataResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  testOperationStatus?: Resolver<ResolversTypes['OperationStatus'], ParentType, ContextType, Partial<MutationtestOperationStatusArgs>>;
+  testOperationStatus?: Resolver<ResolversTypes['OperationStatus'], ParentType, ContextType, RequireFields<MutationtestOperationStatusArgs, 'input'>>;
 };
 
 export type OperationStatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationStatus'] = ResolversParentTypes['OperationStatus']> = {

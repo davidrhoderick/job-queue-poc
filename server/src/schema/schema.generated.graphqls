@@ -3,7 +3,7 @@ type Data {
 }
 
 type Mutation {
-  testOperationStatus(input: TestOperationStatusInput): OperationStatus!
+  testOperationStatus(input: TestOperationStatusInput!): OperationStatus!
 }
 
 type OperationStatus {
