@@ -9,7 +9,8 @@ export const queue = new Queue("test", {
 });
 
 export const getJobState = async (id?: string) => {
-	if (!id) return { id: 'undefined', status: "NOT_FOUND" as OperationStatusEnum };
+	if (!id)
+		return { id: "undefined", status: "NOT_FOUND" as OperationStatusEnum };
 
 	const job = await Job.fromId(queue, id);
 
@@ -49,4 +50,6 @@ export const getJobState = async (id?: string) => {
 	return { id, status: "UNKNOWN" as OperationStatusEnum };
 };
 
-export const operationStatus: NonNullable<QueryResolvers['operationStatus']> = async (_parent, { id }) => getJobState(id);
+export const operationStatus: NonNullable<
+	QueryResolvers["operationStatus"]
+> = async (_parent, { id }) => getJobState(id);

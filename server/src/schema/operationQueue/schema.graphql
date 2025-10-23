@@ -17,7 +17,7 @@ enum OperationStatusEnum {
 	SUCCESS
 	FAIL
 	NOT_FOUND
-  UNKNOWN
+	UNKNOWN
 }
 
 type UserError {
@@ -33,5 +33,5 @@ type OperationStatus {
 }
 
 type Data {
-  anything: String!
+	anything: String!
 }
