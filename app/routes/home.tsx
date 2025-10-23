@@ -73,7 +73,7 @@ export default function Home() {
 				</div>
 				<label
 					htmlFor="should-fail"
-					className="inline-flex items-center gap-2 text-sm text-gray-700"
+					className="inline-flex items-center gap-2 text-sm text-gray-700 mb-2"
 				>
 					<input
 						id="should-fail"
@@ -89,7 +89,7 @@ export default function Home() {
 					onClick={() => mutate({ variables: { duration, shouldFail } })}
 					className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
 				>
-					Test
+					Submit
 				</button>
 			</div>
 
@@ -100,9 +100,6 @@ export default function Home() {
 						<p className="text-lg font-semibold text-gray-900">Status</p>
 					</div>
 					<div className="space-y-3 p-4">
-						{loading && (
-							<div className="text-sm text-gray-500">Checking status…</div>
-						)}
 						{error && (
 							<div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
 								Error: {error.message}
@@ -116,12 +113,12 @@ export default function Home() {
 										className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
 											queryData.operationStatus.status === "SUCCESS"
 												? "bg-green-100 text-green-700"
-											: queryData.operationStatus.status === "FAIL"
-												? "bg-red-100 text-red-700"
-												: "bg-yellow-100 text-yellow-700"
+												: queryData.operationStatus.status === "FAIL"
+													? "bg-red-100 text-red-700"
+													: "bg-yellow-100 text-yellow-700"
 										}`}
 									>
-										{queryData.operationStatus.status}
+										{queryData.operationStatus.status.replace("_", " ")}
 									</span>
 								</div>
 								{queryData.operationStatus.data && (
@@ -138,6 +135,10 @@ export default function Home() {
 									</div>
 								)}
 							</div>
+						)}
+
+						{loading && (
+							<div className="text-sm text-gray-500">Checking status…</div>
 						)}
 					</div>
 				</div>
