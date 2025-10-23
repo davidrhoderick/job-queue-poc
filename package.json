@@ -11,20 +11,27 @@
 		"dev": "concurrently -c 'blue,green,red' -n 'client,server,redis' npm:dev:client npm:dev:server npm:dev:redis",
 		"start": "react-router-serve ./build/server/index.js",
 		"typecheck": "react-router typegen && tsc",
-		"codegen:server": "npm run codegen -w server"
+		"codegen:server": "npm run codegen -w server",
+		"codegen:client": "graphql-codegen",
+		"codegen": "concurrently -c 'blue,green' -n 'client,server' npm:codegen:server npm:codegen:client",
+		"format": "biome format --fix"
 	},
 	"dependencies": {
+		"@apollo/client": "^4.0.7",
 		"@eddeee888/gcg-typescript-resolver-files": "^0.13.0",
-		"@graphql-codegen/cli": "^6.0.0",
 		"@react-router/node": "^7.9.2",
 		"@react-router/serve": "^7.9.2",
+		"graphql": "^16.11.0",
 		"graphql-scalars": "^1.24.2",
 		"isbot": "^5.1.31",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
-		"react-router": "^7.9.2"
+		"react-router": "^7.9.2",
+		"rxjs": "^7.8.2"
 	},
 	"devDependencies": {
+		"@graphql-codegen/cli": "^6.0.1",
+		"@parcel/watcher": "^2.5.1",
 		"@react-router/dev": "^7.9.2",
 		"@tailwindcss/vite": "^4.1.13",
 		"@types/node": "^22",
@@ -32,7 +39,7 @@
 		"@types/react-dom": "^19.1.9",
 		"concurrently": "^9.2.1",
 		"tailwindcss": "^4.1.13",
-		"typescript": "^5.9.2",
+		"typescript": "^5.9.3",
 		"vite": "^7.1.7",
 		"vite-tsconfig-paths": "^5.1.4"
 	}
