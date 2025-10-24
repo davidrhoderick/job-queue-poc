@@ -1,15 +1,29 @@
 /* This file was automatically generated. DO NOT UPDATE MANUALLY. */
 import type { Resolvers } from "./types.generated";
-import { operationStatus as Query_operationStatus } from "./../schema/operationQueue/resolvers/Query/operationStatus";
-import { testOperationStatus as Mutation_testOperationStatus } from "./../schema/operationQueue/resolvers/Mutation/testOperationStatus";
-import { Data } from "./../schema/operationQueue/resolvers/Data";
-import { OperationStatus } from "./../schema/operationQueue/resolvers/OperationStatus";
-import { UserError } from "./../schema/operationQueue/resolvers/UserError";
+import { submissionStatus as Query_submissionStatus } from "./../schema/submissionQueue/resolvers/Query/submissionStatus";
+import { createQualification as Mutation_createQualification } from "./../schema/submissionQueue/resolvers/Mutation/createQualification";
+import { quote as Mutation_quote } from "./../schema/submissionQueue/resolvers/Mutation/quote";
+import { updateAnswers as Mutation_updateAnswers } from "./../schema/submissionQueue/resolvers/Mutation/updateAnswers";
+import { updateLocations as Mutation_updateLocations } from "./../schema/submissionQueue/resolvers/Mutation/updateLocations";
+import { CoverageLocation } from "./../schema/submissionQueue/resolvers/CoverageLocation";
+import { PolicyPeriod } from "./../schema/submissionQueue/resolvers/PolicyPeriod";
+import { PrimaryInsured } from "./../schema/submissionQueue/resolvers/PrimaryInsured";
+import { QuestionAnswer } from "./../schema/submissionQueue/resolvers/QuestionAnswer";
+import { SubmissionStatus } from "./../schema/submissionQueue/resolvers/SubmissionStatus";
+import { UserError } from "./../schema/submissionQueue/resolvers/UserError";
 export const resolvers: Resolvers = {
-	Query: { operationStatus: Query_operationStatus },
-	Mutation: { testOperationStatus: Mutation_testOperationStatus },
+	Query: { submissionStatus: Query_submissionStatus },
+	Mutation: {
+		createQualification: Mutation_createQualification,
+		quote: Mutation_quote,
+		updateAnswers: Mutation_updateAnswers,
+		updateLocations: Mutation_updateLocations,
+	},
 
-	Data: Data,
-	OperationStatus: OperationStatus,
+	CoverageLocation: CoverageLocation,
+	PolicyPeriod: PolicyPeriod,
+	PrimaryInsured: PrimaryInsured,
+	QuestionAnswer: QuestionAnswer,
+	SubmissionStatus: SubmissionStatus,
 	UserError: UserError,
 };

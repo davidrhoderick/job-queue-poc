@@ -1,0 +1,103 @@
+extend type Query {
+	submissionStatus(id: String!): SubmissionStatus!
+}
+
+extend type Mutation {
+	createQualification(input: CreateQualificationInput!): SubmissionStatus!
+	updateAnswers(input: UpdateAnswersInput!): SubmissionStatus!
+	updateLocations(input: UpdateLocationsInput!): SubmissionStatus!
+	quote(input: QuoteInput!): SubmissionStatus!
+}
+
+input CreateQualificationInput {
+	transactionId: String
+	firstName: String!
+	lastName: String!
+	fein: String!
+	agencyId: String!
+}
+
+input UpdateAnswersInput {
+	transactionId: String!
+	questionAnswers: [QuestionAnswerInput]
+}
+
+input QuestionAnswerInput {
+	questionId: String!
+	answer: String!
+}
+
+input UpdateLocationsInput {
+	transactionId: String!
+	coverageLocations: [CoverageLocationInput]
+}
+
+input CoverageLocationInput {
+	state: String!
+	streetAddress1: String
+	streetAddress2: String
+	city: String
+	zipCode: String
+}
+
+input QuoteInput {
+	transactionId: String!
+}
+
+enum SubmissionType {
+	CREATE_QUALIFICATION
+	UPDATE_ANSWERS
+	UPDATE_LOCATIONS
+	QUOTE
+	UNKNOWN
+}
+
+type SubmissionStatus {
+	id: String!
+	type: SubmissionType!
+	status: SubmissionStatusEnum!
+	data: PolicyPeriod
+	errors: [UserError]
+}
+
+enum SubmissionStatusEnum {
+	QUEUED
+	IN_PROGRESS
+	SUCCESS
+	FAIL
+	NOT_FOUND
+	UNKNOWN
+}
+
+type UserError {
+	message: String!
+	path: String
+}
+
+type PolicyPeriod {
+	transactionId: String!
+	primaryInsured: PrimaryInsured!
+	questionAnswers: [QuestionAnswer]
+	coverageLocations: [CoverageLocation]
+	premium: Float
+	agencyId: String!
+}
+
+type PrimaryInsured {
+	firstName: String!
+	lastName: String!
+	fein: String!
+}
+
+type QuestionAnswer {
+	questionId: String!
+	answer: String!
+}
+
+type CoverageLocation {
+	state: String!
+	streetAddress1: String
+	streetAddress2: String
+	city: String
+	zipCode: String
+}

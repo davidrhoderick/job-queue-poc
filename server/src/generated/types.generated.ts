@@ -35,29 +35,106 @@ export type Scalars = {
 	Float: { input: number; output: number };
 };
 
-export type Data = {
-	__typename?: "Data";
-	anything: Scalars["String"]["output"];
+export type CoverageLocation = {
+	__typename?: "CoverageLocation";
+	city?: Maybe<Scalars["String"]["output"]>;
+	state: Scalars["String"]["output"];
+	streetAddress1?: Maybe<Scalars["String"]["output"]>;
+	streetAddress2?: Maybe<Scalars["String"]["output"]>;
+	zipCode?: Maybe<Scalars["String"]["output"]>;
+};
+
+export type CoverageLocationInput = {
+	city?: InputMaybe<Scalars["String"]["input"]>;
+	state: Scalars["String"]["input"];
+	streetAddress1?: InputMaybe<Scalars["String"]["input"]>;
+	streetAddress2?: InputMaybe<Scalars["String"]["input"]>;
+	zipCode?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+export type CreateQualificationInput = {
+	agencyId: Scalars["String"]["input"];
+	fein: Scalars["String"]["input"];
+	firstName: Scalars["String"]["input"];
+	lastName: Scalars["String"]["input"];
+	transactionId?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type Mutation = {
 	__typename?: "Mutation";
-	testOperationStatus: OperationStatus;
+	createQualification: SubmissionStatus;
+	quote: SubmissionStatus;
+	updateAnswers: SubmissionStatus;
+	updateLocations: SubmissionStatus;
 };
 
-export type MutationtestOperationStatusArgs = {
-	input: TestOperationStatusInput;
+export type MutationcreateQualificationArgs = {
+	input: CreateQualificationInput;
 };
 
-export type OperationStatus = {
-	__typename?: "OperationStatus";
-	data?: Maybe<Data>;
+export type MutationquoteArgs = {
+	input: QuoteInput;
+};
+
+export type MutationupdateAnswersArgs = {
+	input: UpdateAnswersInput;
+};
+
+export type MutationupdateLocationsArgs = {
+	input: UpdateLocationsInput;
+};
+
+export type PolicyPeriod = {
+	__typename?: "PolicyPeriod";
+	agencyId: Scalars["String"]["output"];
+	coverageLocations?: Maybe<Array<Maybe<CoverageLocation>>>;
+	premium?: Maybe<Scalars["Float"]["output"]>;
+	primaryInsured: PrimaryInsured;
+	questionAnswers?: Maybe<Array<Maybe<QuestionAnswer>>>;
+	transactionId: Scalars["String"]["output"];
+};
+
+export type PrimaryInsured = {
+	__typename?: "PrimaryInsured";
+	fein: Scalars["String"]["output"];
+	firstName: Scalars["String"]["output"];
+	lastName: Scalars["String"]["output"];
+};
+
+export type Query = {
+	__typename?: "Query";
+	submissionStatus: SubmissionStatus;
+};
+
+export type QuerysubmissionStatusArgs = {
+	id: Scalars["String"]["input"];
+};
+
+export type QuestionAnswer = {
+	__typename?: "QuestionAnswer";
+	answer: Scalars["String"]["output"];
+	questionId: Scalars["String"]["output"];
+};
+
+export type QuestionAnswerInput = {
+	answer: Scalars["String"]["input"];
+	questionId: Scalars["String"]["input"];
+};
+
+export type QuoteInput = {
+	transactionId: Scalars["String"]["input"];
+};
+
+export type SubmissionStatus = {
+	__typename?: "SubmissionStatus";
+	data?: Maybe<PolicyPeriod>;
 	errors?: Maybe<Array<Maybe<UserError>>>;
 	id: Scalars["String"]["output"];
-	status: OperationStatusEnum;
+	status: SubmissionStatusEnum;
+	type: SubmissionType;
 };
 
-export type OperationStatusEnum =
+export type SubmissionStatusEnum =
 	| "FAIL"
 	| "IN_PROGRESS"
 	| "NOT_FOUND"
@@ -65,18 +142,21 @@ export type OperationStatusEnum =
 	| "SUCCESS"
 	| "UNKNOWN";
 
-export type Query = {
-	__typename?: "Query";
-	operationStatus: OperationStatus;
+export type SubmissionType =
+	| "CREATE_QUALIFICATION"
+	| "QUOTE"
+	| "UNKNOWN"
+	| "UPDATE_ANSWERS"
+	| "UPDATE_LOCATIONS";
+
+export type UpdateAnswersInput = {
+	questionAnswers?: InputMaybe<Array<InputMaybe<QuestionAnswerInput>>>;
+	transactionId: Scalars["String"]["input"];
 };
 
-export type QueryoperationStatusArgs = {
-	id: Scalars["String"]["input"];
-};
-
-export type TestOperationStatusInput = {
-	duration: Scalars["Int"]["input"];
-	shouldFail?: InputMaybe<Scalars["Boolean"]["input"]>;
+export type UpdateLocationsInput = {
+	coverageLocations?: InputMaybe<Array<InputMaybe<CoverageLocationInput>>>;
+	transactionId: Scalars["String"]["input"];
 };
 
 export type UserError = {
@@ -204,43 +284,79 @@ export type DirectiveResolverFn<
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-	Data: ResolverTypeWrapper<Data>;
+	CoverageLocation: ResolverTypeWrapper<CoverageLocation>;
 	String: ResolverTypeWrapper<Scalars["String"]["output"]>;
+	CoverageLocationInput: CoverageLocationInput;
+	CreateQualificationInput: CreateQualificationInput;
 	Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
-	OperationStatus: ResolverTypeWrapper<
-		Omit<OperationStatus, "status"> & {
-			status: ResolversTypes["OperationStatusEnum"];
+	PolicyPeriod: ResolverTypeWrapper<PolicyPeriod>;
+	Float: ResolverTypeWrapper<Scalars["Float"]["output"]>;
+	PrimaryInsured: ResolverTypeWrapper<PrimaryInsured>;
+	Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
+	QuestionAnswer: ResolverTypeWrapper<QuestionAnswer>;
+	QuestionAnswerInput: QuestionAnswerInput;
+	QuoteInput: QuoteInput;
+	SubmissionStatus: ResolverTypeWrapper<
+		Omit<SubmissionStatus, "status" | "type"> & {
+			status: ResolversTypes["SubmissionStatusEnum"];
+			type: ResolversTypes["SubmissionType"];
 		}
 	>;
-	OperationStatusEnum: ResolverTypeWrapper<
+	SubmissionStatusEnum: ResolverTypeWrapper<
 		"QUEUED" | "IN_PROGRESS" | "SUCCESS" | "FAIL" | "NOT_FOUND" | "UNKNOWN"
 	>;
-	Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
-	TestOperationStatusInput: TestOperationStatusInput;
-	Int: ResolverTypeWrapper<Scalars["Int"]["output"]>;
-	Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
+	SubmissionType: ResolverTypeWrapper<
+		| "CREATE_QUALIFICATION"
+		| "UPDATE_ANSWERS"
+		| "UPDATE_LOCATIONS"
+		| "QUOTE"
+		| "UNKNOWN"
+	>;
+	UpdateAnswersInput: UpdateAnswersInput;
+	UpdateLocationsInput: UpdateLocationsInput;
 	UserError: ResolverTypeWrapper<UserError>;
+	Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-	Data: Data;
+	CoverageLocation: CoverageLocation;
 	String: Scalars["String"]["output"];
+	CoverageLocationInput: CoverageLocationInput;
+	CreateQualificationInput: CreateQualificationInput;
 	Mutation: Record<PropertyKey, never>;
-	OperationStatus: OperationStatus;
+	PolicyPeriod: PolicyPeriod;
+	Float: Scalars["Float"]["output"];
+	PrimaryInsured: PrimaryInsured;
 	Query: Record<PropertyKey, never>;
-	TestOperationStatusInput: TestOperationStatusInput;
-	Int: Scalars["Int"]["output"];
-	Boolean: Scalars["Boolean"]["output"];
+	QuestionAnswer: QuestionAnswer;
+	QuestionAnswerInput: QuestionAnswerInput;
+	QuoteInput: QuoteInput;
+	SubmissionStatus: SubmissionStatus;
+	UpdateAnswersInput: UpdateAnswersInput;
+	UpdateLocationsInput: UpdateLocationsInput;
 	UserError: UserError;
+	Boolean: Scalars["Boolean"]["output"];
 };
 
-export type DataResolvers<
+export type CoverageLocationResolvers<
 	ContextType = any,
 	ParentType extends
-		ResolversParentTypes["Data"] = ResolversParentTypes["Data"],
+		ResolversParentTypes["CoverageLocation"] = ResolversParentTypes["CoverageLocation"],
 > = {
-	anything?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	city?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+	state?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	streetAddress1?: Resolver<
+		Maybe<ResolversTypes["String"]>,
+		ParentType,
+		ContextType
+	>;
+	streetAddress2?: Resolver<
+		Maybe<ResolversTypes["String"]>,
+		ParentType,
+		ContextType
+	>;
+	zipCode?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
 };
 
 export type MutationResolvers<
@@ -248,20 +364,99 @@ export type MutationResolvers<
 	ParentType extends
 		ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"],
 > = {
-	testOperationStatus?: Resolver<
-		ResolversTypes["OperationStatus"],
+	createQualification?: Resolver<
+		ResolversTypes["SubmissionStatus"],
 		ParentType,
 		ContextType,
-		RequireFields<MutationtestOperationStatusArgs, "input">
+		RequireFields<MutationcreateQualificationArgs, "input">
+	>;
+	quote?: Resolver<
+		ResolversTypes["SubmissionStatus"],
+		ParentType,
+		ContextType,
+		RequireFields<MutationquoteArgs, "input">
+	>;
+	updateAnswers?: Resolver<
+		ResolversTypes["SubmissionStatus"],
+		ParentType,
+		ContextType,
+		RequireFields<MutationupdateAnswersArgs, "input">
+	>;
+	updateLocations?: Resolver<
+		ResolversTypes["SubmissionStatus"],
+		ParentType,
+		ContextType,
+		RequireFields<MutationupdateLocationsArgs, "input">
 	>;
 };
 
-export type OperationStatusResolvers<
+export type PolicyPeriodResolvers<
 	ContextType = any,
 	ParentType extends
-		ResolversParentTypes["OperationStatus"] = ResolversParentTypes["OperationStatus"],
+		ResolversParentTypes["PolicyPeriod"] = ResolversParentTypes["PolicyPeriod"],
 > = {
-	data?: Resolver<Maybe<ResolversTypes["Data"]>, ParentType, ContextType>;
+	agencyId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	coverageLocations?: Resolver<
+		Maybe<Array<Maybe<ResolversTypes["CoverageLocation"]>>>,
+		ParentType,
+		ContextType
+	>;
+	premium?: Resolver<Maybe<ResolversTypes["Float"]>, ParentType, ContextType>;
+	primaryInsured?: Resolver<
+		ResolversTypes["PrimaryInsured"],
+		ParentType,
+		ContextType
+	>;
+	questionAnswers?: Resolver<
+		Maybe<Array<Maybe<ResolversTypes["QuestionAnswer"]>>>,
+		ParentType,
+		ContextType
+	>;
+	transactionId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+};
+
+export type PrimaryInsuredResolvers<
+	ContextType = any,
+	ParentType extends
+		ResolversParentTypes["PrimaryInsured"] = ResolversParentTypes["PrimaryInsured"],
+> = {
+	fein?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	firstName?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	lastName?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+};
+
+export type QueryResolvers<
+	ContextType = any,
+	ParentType extends
+		ResolversParentTypes["Query"] = ResolversParentTypes["Query"],
+> = {
+	submissionStatus?: Resolver<
+		ResolversTypes["SubmissionStatus"],
+		ParentType,
+		ContextType,
+		RequireFields<QuerysubmissionStatusArgs, "id">
+	>;
+};
+
+export type QuestionAnswerResolvers<
+	ContextType = any,
+	ParentType extends
+		ResolversParentTypes["QuestionAnswer"] = ResolversParentTypes["QuestionAnswer"],
+> = {
+	answer?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+	questionId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+};
+
+export type SubmissionStatusResolvers<
+	ContextType = any,
+	ParentType extends
+		ResolversParentTypes["SubmissionStatus"] = ResolversParentTypes["SubmissionStatus"],
+> = {
+	data?: Resolver<
+		Maybe<ResolversTypes["PolicyPeriod"]>,
+		ParentType,
+		ContextType
+	>;
 	errors?: Resolver<
 		Maybe<Array<Maybe<ResolversTypes["UserError"]>>>,
 		ParentType,
@@ -269,13 +464,14 @@ export type OperationStatusResolvers<
 	>;
 	id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
 	status?: Resolver<
-		ResolversTypes["OperationStatusEnum"],
+		ResolversTypes["SubmissionStatusEnum"],
 		ParentType,
 		ContextType
 	>;
+	type?: Resolver<ResolversTypes["SubmissionType"], ParentType, ContextType>;
 };
 
-export type OperationStatusEnumResolvers = EnumResolverSignature<
+export type SubmissionStatusEnumResolvers = EnumResolverSignature<
 	{
 		FAIL?: any;
 		IN_PROGRESS?: any;
@@ -284,21 +480,19 @@ export type OperationStatusEnumResolvers = EnumResolverSignature<
 		SUCCESS?: any;
 		UNKNOWN?: any;
 	},
-	ResolversTypes["OperationStatusEnum"]
+	ResolversTypes["SubmissionStatusEnum"]
 >;
 
-export type QueryResolvers<
-	ContextType = any,
-	ParentType extends
-		ResolversParentTypes["Query"] = ResolversParentTypes["Query"],
-> = {
-	operationStatus?: Resolver<
-		ResolversTypes["OperationStatus"],
-		ParentType,
-		ContextType,
-		RequireFields<QueryoperationStatusArgs, "id">
-	>;
-};
+export type SubmissionTypeResolvers = EnumResolverSignature<
+	{
+		CREATE_QUALIFICATION?: any;
+		QUOTE?: any;
+		UNKNOWN?: any;
+		UPDATE_ANSWERS?: any;
+		UPDATE_LOCATIONS?: any;
+	},
+	ResolversTypes["SubmissionType"]
+>;
 
 export type UserErrorResolvers<
 	ContextType = any,
@@ -310,10 +504,14 @@ export type UserErrorResolvers<
 };
 
 export type Resolvers<ContextType = any> = {
-	Data?: DataResolvers<ContextType>;
+	CoverageLocation?: CoverageLocationResolvers<ContextType>;
 	Mutation?: MutationResolvers<ContextType>;
-	OperationStatus?: OperationStatusResolvers<ContextType>;
-	OperationStatusEnum?: OperationStatusEnumResolvers;
+	PolicyPeriod?: PolicyPeriodResolvers<ContextType>;
+	PrimaryInsured?: PrimaryInsuredResolvers<ContextType>;
 	Query?: QueryResolvers<ContextType>;
+	QuestionAnswer?: QuestionAnswerResolvers<ContextType>;
+	SubmissionStatus?: SubmissionStatusResolvers<ContextType>;
+	SubmissionStatusEnum?: SubmissionStatusEnumResolvers;
+	SubmissionType?: SubmissionTypeResolvers;
 	UserError?: UserErrorResolvers<ContextType>;
 };
