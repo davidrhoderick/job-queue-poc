@@ -12,12 +12,13 @@
 		"build": "tsc -p tsconfig.json",
 		"start": "node dist/server.js",
 		"codegen": "graphql-codegen --watch",
-    "format": "biome format --fix"
+		"format": "biome format --fix"
 	},
 	"dependencies": {
 		"bullmq": "^5.61.0",
 		"graphql": "^16.11.0",
 		"graphql-yoga": "^5.16.0",
+		"ioredis": "^5.8.2",
 		"redis": "^5.8.3"
 	},
 	"devDependencies": {

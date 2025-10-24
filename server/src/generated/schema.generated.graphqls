@@ -1,37 +1,103 @@
-type Data {
-  anything: String!
+type CoverageLocation {
+	city: String
+	state: String!
+	streetAddress1: String
+	streetAddress2: String
+	zipCode: String
+}
+
+input CoverageLocationInput {
+	city: String
+	state: String!
+	streetAddress1: String
+	streetAddress2: String
+	zipCode: String
+}
+
+input CreateQualificationInput {
+	agencyId: String!
+	fein: String!
+	firstName: String!
+	lastName: String!
+	transactionId: String
 }
 
 type Mutation {
-  testOperationStatus(input: TestOperationStatusInput!): OperationStatus!
+	createQualification(input: CreateQualificationInput!): SubmissionStatus!
+	quote(input: QuoteInput!): SubmissionStatus!
+	updateAnswers(input: UpdateAnswersInput!): SubmissionStatus!
+	updateLocations(input: UpdateLocationsInput!): SubmissionStatus!
 }
 
-type OperationStatus {
-  data: Data
-  errors: [UserError]
-  id: String!
-  status: OperationStatusEnum!
+type PolicyPeriod {
+	agencyId: String!
+	coverageLocations: [CoverageLocation]
+	premium: Float
+	primaryInsured: PrimaryInsured!
+	questionAnswers: [QuestionAnswer]
+	transactionId: String!
 }
 
-enum OperationStatusEnum {
-  FAIL
-  IN_PROGRESS
-  NOT_FOUND
-  QUEUED
-  SUCCESS
-  UNKNOWN
+type PrimaryInsured {
+	fein: String!
+	firstName: String!
+	lastName: String!
 }
 
 type Query {
-  operationStatus(id: String!): OperationStatus!
+	submissionStatus(id: String!): SubmissionStatus!
 }
 
-input TestOperationStatusInput {
-  duration: Int!
-  shouldFail: Boolean
+type QuestionAnswer {
+	answer: String!
+	questionId: String!
+}
+
+input QuestionAnswerInput {
+	answer: String!
+	questionId: String!
+}
+
+input QuoteInput {
+	transactionId: String!
+}
+
+type SubmissionStatus {
+	data: PolicyPeriod
+	errors: [UserError]
+	id: String!
+	status: SubmissionStatusEnum!
+	type: SubmissionType!
+}
+
+enum SubmissionStatusEnum {
+	FAIL
+	IN_PROGRESS
+	NOT_FOUND
+	QUEUED
+	SUCCESS
+	UNKNOWN
+}
+
+enum SubmissionType {
+	CREATE_QUALIFICATION
+	QUOTE
+	UNKNOWN
+	UPDATE_ANSWERS
+	UPDATE_LOCATIONS
+}
+
+input UpdateAnswersInput {
+	questionAnswers: [QuestionAnswerInput]
+	transactionId: String!
+}
+
+input UpdateLocationsInput {
+	coverageLocations: [CoverageLocationInput]
+	transactionId: String!
 }
 
 type UserError {
-  message: String!
-  path: String
+	message: String!
+	path: String
 }
