@@ -12,6 +12,7 @@ import {
 export const redis = new Redis("redis://localhost:6379", {
 	// prod tip from docs: often disable offline queue for enqueueing paths
 	enableOfflineQueue: false, // workers can keep default true
+	maxRetriesPerRequest: null,
 });
 
 export const submissionsQueue = new Queue("submissions", {
