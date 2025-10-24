@@ -11,7 +11,7 @@ const QUOTE = graphql(`
   }
 `);
 
-export default function Quote({
+export default function FinalReview({
 	setId,
 	transactionId,
 }: Readonly<{
