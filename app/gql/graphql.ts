@@ -174,6 +174,19 @@ export type CreateQualificationMutation = {
 	};
 };
 
+export type QuoteMutationVariables = Exact<{
+	input: QuoteInput;
+}>;
+
+export type QuoteMutation = {
+	__typename?: "Mutation";
+	quote: {
+		__typename?: "SubmissionStatus";
+		id: string;
+		status: SubmissionStatusEnum;
+	};
+};
+
 export type UpdateAnswersMutationVariables = Exact<{
 	input: UpdateAnswersInput;
 }>;
@@ -298,6 +311,58 @@ export const CreateQualificationDocument = {
 	CreateQualificationMutation,
 	CreateQualificationMutationVariables
 >;
+export const QuoteDocument = {
+	kind: "Document",
+	definitions: [
+		{
+			kind: "OperationDefinition",
+			operation: "mutation",
+			name: { kind: "Name", value: "Quote" },
+			variableDefinitions: [
+				{
+					kind: "VariableDefinition",
+					variable: {
+						kind: "Variable",
+						name: { kind: "Name", value: "input" },
+					},
+					type: {
+						kind: "NonNullType",
+						type: {
+							kind: "NamedType",
+							name: { kind: "Name", value: "QuoteInput" },
+						},
+					},
+				},
+			],
+			selectionSet: {
+				kind: "SelectionSet",
+				selections: [
+					{
+						kind: "Field",
+						name: { kind: "Name", value: "quote" },
+						arguments: [
+							{
+								kind: "Argument",
+								name: { kind: "Name", value: "input" },
+								value: {
+									kind: "Variable",
+									name: { kind: "Name", value: "input" },
+								},
+							},
+						],
+						selectionSet: {
+							kind: "SelectionSet",
+							selections: [
+								{ kind: "Field", name: { kind: "Name", value: "id" } },
+								{ kind: "Field", name: { kind: "Name", value: "status" } },
+							],
+						},
+					},
+				],
+			},
+		},
+	],
+} as unknown as DocumentNode<QuoteMutation, QuoteMutationVariables>;
 export const UpdateAnswersDocument = {
 	kind: "Document",
 	definitions: [

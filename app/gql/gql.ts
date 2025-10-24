@@ -15,6 +15,7 @@ import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-
  */
 type Documents = {
 	"\n  mutation CreateQualification($input: CreateQualificationInput!) {\n    createQualification(input: $input) {\n      id\n      status\n    }\n  }\n": typeof types.CreateQualificationDocument;
+	"\n  mutation Quote($input: QuoteInput!) {\n    quote(input: $input) {\n      id\n      status\n    }\n  }\n": typeof types.QuoteDocument;
 	"\n  mutation UpdateAnswers($input: UpdateAnswersInput!) {\n    updateAnswers(input: $input) {\n      id\n      status\n    }\n  }\n": typeof types.UpdateAnswersDocument;
 	"\n  mutation UpdateLocations($input: UpdateLocationsInput!) {\n    updateLocations(input: $input) {\n      id\n      status\n    }\n  }\n": typeof types.UpdateLocationsDocument;
 	"\n  query SubmissionStatus($id: String!) {\n    submissionStatus(id: $id) {\n      id\n      status\n\t\t\ttype\n\t\t\tdata {\n\t\t\t\ttransactionId\n\t\t\t\tprimaryInsured {\n\t\t\t\t\tfirstName\n\t\t\t\t\tlastName\n\t\t\t\t\tfein\n\t\t\t\t}\n\t\t\t\tquestionAnswers {\n\t\t\t\t\tquestionId\n\t\t\t\t\tanswer\n\t\t\t\t}\n\t\t\t\tcoverageLocations {\n\t\t\t\t\tstate\n\t\t\t\t\tstreetAddress1\n\t\t\t\t\tstreetAddress2\n\t\t\t\t\tcity\n\t\t\t\t\tzipCode\n\t\t\t\t}\n\t\t\t\t\tagencyId\n\t\t\t}\n\t\t\terrors {\n\t\t\t\tmessage\n\t\t\t\tpath\n\t\t\t}\n    }\n  }\n": typeof types.SubmissionStatusDocument;
@@ -22,6 +23,8 @@ type Documents = {
 const documents: Documents = {
 	"\n  mutation CreateQualification($input: CreateQualificationInput!) {\n    createQualification(input: $input) {\n      id\n      status\n    }\n  }\n":
 		types.CreateQualificationDocument,
+	"\n  mutation Quote($input: QuoteInput!) {\n    quote(input: $input) {\n      id\n      status\n    }\n  }\n":
+		types.QuoteDocument,
 	"\n  mutation UpdateAnswers($input: UpdateAnswersInput!) {\n    updateAnswers(input: $input) {\n      id\n      status\n    }\n  }\n":
 		types.UpdateAnswersDocument,
 	"\n  mutation UpdateLocations($input: UpdateLocationsInput!) {\n    updateLocations(input: $input) {\n      id\n      status\n    }\n  }\n":
@@ -50,6 +53,12 @@ export function graphql(source: string): unknown;
 export function graphql(
 	source: "\n  mutation CreateQualification($input: CreateQualificationInput!) {\n    createQualification(input: $input) {\n      id\n      status\n    }\n  }\n",
 ): (typeof documents)["\n  mutation CreateQualification($input: CreateQualificationInput!) {\n    createQualification(input: $input) {\n      id\n      status\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "\n  mutation Quote($input: QuoteInput!) {\n    quote(input: $input) {\n      id\n      status\n    }\n  }\n",
+): (typeof documents)["\n  mutation Quote($input: QuoteInput!) {\n    quote(input: $input) {\n      id\n      status\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
