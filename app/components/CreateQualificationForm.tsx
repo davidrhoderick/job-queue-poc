@@ -27,25 +27,67 @@ export default function CreateQualificationForm({
 	const { register, handleSubmit } = useForm<CreateQualificationInput>();
 
 	return (
-		<div>
+		<div className="max-w-2xl ml-4 p-4">
+			<h2 className="text-xl font-semibold mb-2">Create Qualifications</h2>
 			<form
+				className="grid grid-cols-1 sm:grid-cols-2 gap-4"
 				onSubmit={handleSubmit((data) =>
 					createQualification({ variables: { input: data } }),
 				)}
 			>
-				<label htmlFor="agencyId">Agency ID</label>
-				<input type="text" id="agencyId" {...register("agencyId")} />
+				<div className="flex flex-col">
+					<label htmlFor="firstName" className="text-sm font-medium">First Name</label>
+					<input
+						type="text"
+						id="firstName"
+						className="mt-1 rounded border border-gray-300 px-3 py-2"
+						{...register("firstName")}
+					/>
+				</div>
 
-				<label htmlFor="fein">FEIN</label>
-				<input type="text" id="fein" {...register("fein")} />
+				<div className="flex flex-col">
+					<label htmlFor="lastName" className="text-sm font-medium">Last Name</label>
+					<input
+						type="text"
+						id="lastName"
+						className="mt-1 rounded border border-gray-300 px-3 py-2"
+						{...register("lastName")}
+					/>
+				</div>
 
-				<label htmlFor="firstName">First Name</label>
-				<input type="text" id="firstName" {...register("firstName")} />
+				<div className="flex flex-col">
+					<label htmlFor="fein" className="text-sm font-medium">FEIN</label>
+					<input
+						type="text"
+						id="fein"
+						className="mt-1 rounded border border-gray-300 px-3 py-2"
+						{...register("fein")}
+					/>
+				</div>
 
-				<label htmlFor="lastName">Last Name</label>
-				<input type="text" id="lastName" {...register("lastName")} />
+				<div className="flex flex-col">
+					<label htmlFor="agencyId" className="text-sm font-medium">Agency ID</label>
+					<select
+						id="agencyId"
+						className="mt-1 rounded border border-gray-300 px-3 py-2 bg-white"
+						{...register("agencyId")}
+					>
+						<option value="">Select an agency</option>
+						<option value="1001">Acme Assurance</option>
+						<option value="1002">Beacon Mutual</option>
+						<option value="1003">Cypress Casualty</option>
+						<option value="1004">Delta Insurance Group</option>
+					</select>
+				</div>
 
-				<button type="submit">Submit</button>
+				<div className="sm:col-span-2">
+					<button
+						type="submit"
+						className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+					>
+						Submit
+					</button>
+				</div>
 			</form>
 		</div>
 	);
