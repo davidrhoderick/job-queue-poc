@@ -1,6 +1,8 @@
-import { useMutation, useQuery } from "@apollo/client/react";
-import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@apollo/client/react";
+import { useEffect, useState } from "react";
 import CreateQualificationForm from "~/components/CreateQualificationForm";
+import UpdateAnswersForm from "~/components/UpdateAnswersForm";
+import UpdateLocationsForm from "~/components/UpdateLocations";
 import { graphql } from "~/gql";
 
 const SUBMISSION_STATUS = graphql(`
@@ -8,7 +10,9 @@ const SUBMISSION_STATUS = graphql(`
     submissionStatus(id: $id) {
       id
       status
+			type
 			data {
+				transactionId
 				primaryInsured {
 					firstName
 					lastName
@@ -35,12 +39,18 @@ const SUBMISSION_STATUS = graphql(`
   }
 `);
 
-export default function Home() {
-	const [duration, setDuration] = useState(10);
-	const [shouldFail, setShouldFail] = useState(false);
-	const [id, setId] = useState<string | undefined>(undefined);
+const setNextStep = (type: string) =>
+	type
+		? ({
+				CREATE_QUALIFICATION: "UPDATE_ANSWERS",
+				UPDATE_ANSWERS: "UPDATE_LOCATIONS",
+				UPDATE_LOCATIONS: "QUOTE",
+			}[type] ?? "UNKNOWN")
+		: "UNKNOWN";
 
-	// const [mutate, { data: mutationData }] = useMutation(TEST_OPERATION_STATUS);
+export default function Home() {
+	const [id, setId] = useState<string | undefined>(undefined);
+	const [step, setStep] = useState<string>("CREATE_QUALIFICATION");
 
 	const {
 		data: queryData,
@@ -60,50 +70,19 @@ export default function Home() {
 			queryData?.submissionStatus?.status === "QUEUED"
 		)
 			startPolling(1500);
-		else stopPolling();
-	}, [queryData?.submissionStatus?.status, startPolling, stopPolling]);
+		else {
+			stopPolling();
+			if (
+				queryData?.submissionStatus?.status === "SUCCESS" &&
+				queryData.submissionStatus.data?.transactionId?.length
+			) {
+				setStep(setNextStep(queryData.submissionStatus.type!));
+			}
+		}
+	}, [queryData, startPolling, stopPolling]);
 
 	return (
 		<div>
-			<div className="flex items-end gap-4 p-4">
-				<div className="flex flex-col gap-1">
-					<label
-						htmlFor="duration"
-						className="text-sm font-medium text-gray-700"
-					>
-						Duration (s)
-					</label>
-					<input
-						id="duration"
-						type="number"
-						min={0}
-						value={duration}
-						onChange={(e) => setDuration(Number(e.target.value))}
-						className="w-28 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-					/>
-				</div>
-				<label
-					htmlFor="should-fail"
-					className="inline-flex items-center gap-2 text-sm text-gray-700 mb-2"
-				>
-					<input
-						id="should-fail"
-						type="checkbox"
-						checked={shouldFail}
-						onChange={(e) => setShouldFail(e.target.checked)}
-						className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-					/>
-					Should fail
-				</label>
-				{/* <button
-					type="button"
-					onClick={() => mutate({ variables: { duration, shouldFail } })}
-					className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-				>
-					Submit
-				</button> */}
-			</div>
-
 			<div className="p-4">
 				<div className="rounded-lg border border-gray-200 bg-white shadow-sm">
 					<div className="border-b border-gray-200 px-4 py-3">
@@ -129,7 +108,7 @@ export default function Home() {
 													: "bg-yellow-100 text-yellow-700"
 										}`}
 									>
-										{status?.replace("_", " ")}
+										{queryData?.submissionStatus?.status?.replace("_", " ")}
 									</span>
 								</div>
 								{queryData?.submissionStatus?.data && (
@@ -158,7 +137,21 @@ export default function Home() {
 				</div>
 			</div>
 
-			<CreateQualificationForm setId={setId} />
+			{step === "CREATE_QUALIFICATION" && (
+				<CreateQualificationForm setId={setId} />
+			)}
+			{step === "UPDATE_ANSWERS" && (
+				<UpdateAnswersForm
+					setId={setId}
+					transactionId={queryData?.submissionStatus?.data?.transactionId}
+				/>
+			)}
+			{step === "UPDATE_LOCATIONS" && (
+				<UpdateLocationsForm
+					setId={setId}
+					transactionId={queryData?.submissionStatus?.data?.transactionId!}
+				/>
+			)}
 		</div>
 	);
 }

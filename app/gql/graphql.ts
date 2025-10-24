@@ -174,6 +174,32 @@ export type CreateQualificationMutation = {
 	};
 };
 
+export type UpdateAnswersMutationVariables = Exact<{
+	input: UpdateAnswersInput;
+}>;
+
+export type UpdateAnswersMutation = {
+	__typename?: "Mutation";
+	updateAnswers: {
+		__typename?: "SubmissionStatus";
+		id: string;
+		status: SubmissionStatusEnum;
+	};
+};
+
+export type UpdateLocationsMutationVariables = Exact<{
+	input: UpdateLocationsInput;
+}>;
+
+export type UpdateLocationsMutation = {
+	__typename?: "Mutation";
+	updateLocations: {
+		__typename?: "SubmissionStatus";
+		id: string;
+		status: SubmissionStatusEnum;
+	};
+};
+
 export type SubmissionStatusQueryVariables = Exact<{
 	id: Scalars["String"]["input"];
 }>;
@@ -184,8 +210,10 @@ export type SubmissionStatusQuery = {
 		__typename?: "SubmissionStatus";
 		id: string;
 		status: SubmissionStatusEnum;
+		type: SubmissionType;
 		data?: {
 			__typename?: "PolicyPeriod";
+			transactionId: string;
 			agencyId: string;
 			primaryInsured: {
 				__typename?: "PrimaryInsured";
@@ -270,6 +298,116 @@ export const CreateQualificationDocument = {
 	CreateQualificationMutation,
 	CreateQualificationMutationVariables
 >;
+export const UpdateAnswersDocument = {
+	kind: "Document",
+	definitions: [
+		{
+			kind: "OperationDefinition",
+			operation: "mutation",
+			name: { kind: "Name", value: "UpdateAnswers" },
+			variableDefinitions: [
+				{
+					kind: "VariableDefinition",
+					variable: {
+						kind: "Variable",
+						name: { kind: "Name", value: "input" },
+					},
+					type: {
+						kind: "NonNullType",
+						type: {
+							kind: "NamedType",
+							name: { kind: "Name", value: "UpdateAnswersInput" },
+						},
+					},
+				},
+			],
+			selectionSet: {
+				kind: "SelectionSet",
+				selections: [
+					{
+						kind: "Field",
+						name: { kind: "Name", value: "updateAnswers" },
+						arguments: [
+							{
+								kind: "Argument",
+								name: { kind: "Name", value: "input" },
+								value: {
+									kind: "Variable",
+									name: { kind: "Name", value: "input" },
+								},
+							},
+						],
+						selectionSet: {
+							kind: "SelectionSet",
+							selections: [
+								{ kind: "Field", name: { kind: "Name", value: "id" } },
+								{ kind: "Field", name: { kind: "Name", value: "status" } },
+							],
+						},
+					},
+				],
+			},
+		},
+	],
+} as unknown as DocumentNode<
+	UpdateAnswersMutation,
+	UpdateAnswersMutationVariables
+>;
+export const UpdateLocationsDocument = {
+	kind: "Document",
+	definitions: [
+		{
+			kind: "OperationDefinition",
+			operation: "mutation",
+			name: { kind: "Name", value: "UpdateLocations" },
+			variableDefinitions: [
+				{
+					kind: "VariableDefinition",
+					variable: {
+						kind: "Variable",
+						name: { kind: "Name", value: "input" },
+					},
+					type: {
+						kind: "NonNullType",
+						type: {
+							kind: "NamedType",
+							name: { kind: "Name", value: "UpdateLocationsInput" },
+						},
+					},
+				},
+			],
+			selectionSet: {
+				kind: "SelectionSet",
+				selections: [
+					{
+						kind: "Field",
+						name: { kind: "Name", value: "updateLocations" },
+						arguments: [
+							{
+								kind: "Argument",
+								name: { kind: "Name", value: "input" },
+								value: {
+									kind: "Variable",
+									name: { kind: "Name", value: "input" },
+								},
+							},
+						],
+						selectionSet: {
+							kind: "SelectionSet",
+							selections: [
+								{ kind: "Field", name: { kind: "Name", value: "id" } },
+								{ kind: "Field", name: { kind: "Name", value: "status" } },
+							],
+						},
+					},
+				],
+			},
+		},
+	],
+} as unknown as DocumentNode<
+	UpdateLocationsMutation,
+	UpdateLocationsMutationVariables
+>;
 export const SubmissionStatusDocument = {
 	kind: "Document",
 	definitions: [
@@ -311,12 +449,17 @@ export const SubmissionStatusDocument = {
 							selections: [
 								{ kind: "Field", name: { kind: "Name", value: "id" } },
 								{ kind: "Field", name: { kind: "Name", value: "status" } },
+								{ kind: "Field", name: { kind: "Name", value: "type" } },
 								{
 									kind: "Field",
 									name: { kind: "Name", value: "data" },
 									selectionSet: {
 										kind: "SelectionSet",
 										selections: [
+											{
+												kind: "Field",
+												name: { kind: "Name", value: "transactionId" },
+											},
 											{
 												kind: "Field",
 												name: { kind: "Name", value: "primaryInsured" },
