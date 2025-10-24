@@ -1,6 +1,6 @@
 /* eslint-disable */
-import * as types from './graphql';
-import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+import * as types from "./graphql";
+import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
 
 /**
  * Map of all GraphQL operations in the project.
@@ -14,12 +14,14 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  mutation TestOperationStatus($duration: Int!, $shouldFail: Boolean) {\n    testOperationStatus(input: {duration: $duration, shouldFail: $shouldFail}) {\n      id\n      status\n    }\n  }\n": typeof types.TestOperationStatusDocument,
-    "\n  query OperationStatus($id: String!) {\n    operationStatus(id: $id) {\n      id\n      status\n      data {\n        anything\n      }\n      errors {\n        message\n        path\n      }\n    }\n  }\n": typeof types.OperationStatusDocument,
+	"\n  mutation CreateQualification($input: CreateQualificationInput!) {\n    createQualification(input: $input) {\n      id\n      status\n    }\n  }\n": typeof types.CreateQualificationDocument;
+	"\n  query SubmissionStatus($id: String!) {\n    submissionStatus(id: $id) {\n      id\n      status\n\t\t\tdata {\n\t\t\t\tprimaryInsured {\n\t\t\t\t\tfirstName\n\t\t\t\t\tlastName\n\t\t\t\t\tfein\n\t\t\t\t}\n\t\t\t\tquestionAnswers {\n\t\t\t\t\tquestionId\n\t\t\t\t\tanswer\n\t\t\t\t}\n\t\t\t\tcoverageLocations {\n\t\t\t\t\tstate\n\t\t\t\t\tstreetAddress1\n\t\t\t\t\tstreetAddress2\n\t\t\t\t\tcity\n\t\t\t\t\tzipCode\n\t\t\t\t}\n\t\t\t\t\tagencyId\n\t\t\t}\n\t\t\terrors {\n\t\t\t\tmessage\n\t\t\t\tpath\n\t\t\t}\n    }\n  }\n": typeof types.SubmissionStatusDocument;
 };
 const documents: Documents = {
-    "\n  mutation TestOperationStatus($duration: Int!, $shouldFail: Boolean) {\n    testOperationStatus(input: {duration: $duration, shouldFail: $shouldFail}) {\n      id\n      status\n    }\n  }\n": types.TestOperationStatusDocument,
-    "\n  query OperationStatus($id: String!) {\n    operationStatus(id: $id) {\n      id\n      status\n      data {\n        anything\n      }\n      errors {\n        message\n        path\n      }\n    }\n  }\n": types.OperationStatusDocument,
+	"\n  mutation CreateQualification($input: CreateQualificationInput!) {\n    createQualification(input: $input) {\n      id\n      status\n    }\n  }\n":
+		types.CreateQualificationDocument,
+	"\n  query SubmissionStatus($id: String!) {\n    submissionStatus(id: $id) {\n      id\n      status\n\t\t\tdata {\n\t\t\t\tprimaryInsured {\n\t\t\t\t\tfirstName\n\t\t\t\t\tlastName\n\t\t\t\t\tfein\n\t\t\t\t}\n\t\t\t\tquestionAnswers {\n\t\t\t\t\tquestionId\n\t\t\t\t\tanswer\n\t\t\t\t}\n\t\t\t\tcoverageLocations {\n\t\t\t\t\tstate\n\t\t\t\t\tstreetAddress1\n\t\t\t\t\tstreetAddress2\n\t\t\t\t\tcity\n\t\t\t\t\tzipCode\n\t\t\t\t}\n\t\t\t\t\tagencyId\n\t\t\t}\n\t\t\terrors {\n\t\t\t\tmessage\n\t\t\t\tpath\n\t\t\t}\n    }\n  }\n":
+		types.SubmissionStatusDocument,
 };
 
 /**
@@ -39,14 +41,19 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation TestOperationStatus($duration: Int!, $shouldFail: Boolean) {\n    testOperationStatus(input: {duration: $duration, shouldFail: $shouldFail}) {\n      id\n      status\n    }\n  }\n"): (typeof documents)["\n  mutation TestOperationStatus($duration: Int!, $shouldFail: Boolean) {\n    testOperationStatus(input: {duration: $duration, shouldFail: $shouldFail}) {\n      id\n      status\n    }\n  }\n"];
+export function graphql(
+	source: "\n  mutation CreateQualification($input: CreateQualificationInput!) {\n    createQualification(input: $input) {\n      id\n      status\n    }\n  }\n",
+): (typeof documents)["\n  mutation CreateQualification($input: CreateQualificationInput!) {\n    createQualification(input: $input) {\n      id\n      status\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query OperationStatus($id: String!) {\n    operationStatus(id: $id) {\n      id\n      status\n      data {\n        anything\n      }\n      errors {\n        message\n        path\n      }\n    }\n  }\n"): (typeof documents)["\n  query OperationStatus($id: String!) {\n    operationStatus(id: $id) {\n      id\n      status\n      data {\n        anything\n      }\n      errors {\n        message\n        path\n      }\n    }\n  }\n"];
+export function graphql(
+	source: "\n  query SubmissionStatus($id: String!) {\n    submissionStatus(id: $id) {\n      id\n      status\n\t\t\tdata {\n\t\t\t\tprimaryInsured {\n\t\t\t\t\tfirstName\n\t\t\t\t\tlastName\n\t\t\t\t\tfein\n\t\t\t\t}\n\t\t\t\tquestionAnswers {\n\t\t\t\t\tquestionId\n\t\t\t\t\tanswer\n\t\t\t\t}\n\t\t\t\tcoverageLocations {\n\t\t\t\t\tstate\n\t\t\t\t\tstreetAddress1\n\t\t\t\t\tstreetAddress2\n\t\t\t\t\tcity\n\t\t\t\t\tzipCode\n\t\t\t\t}\n\t\t\t\t\tagencyId\n\t\t\t}\n\t\t\terrors {\n\t\t\t\tmessage\n\t\t\t\tpath\n\t\t\t}\n    }\n  }\n",
+): (typeof documents)["\n  query SubmissionStatus($id: String!) {\n    submissionStatus(id: $id) {\n      id\n      status\n\t\t\tdata {\n\t\t\t\tprimaryInsured {\n\t\t\t\t\tfirstName\n\t\t\t\t\tlastName\n\t\t\t\t\tfein\n\t\t\t\t}\n\t\t\t\tquestionAnswers {\n\t\t\t\t\tquestionId\n\t\t\t\t\tanswer\n\t\t\t\t}\n\t\t\t\tcoverageLocations {\n\t\t\t\t\tstate\n\t\t\t\t\tstreetAddress1\n\t\t\t\t\tstreetAddress2\n\t\t\t\t\tcity\n\t\t\t\t\tzipCode\n\t\t\t\t}\n\t\t\t\t\tagencyId\n\t\t\t}\n\t\t\terrors {\n\t\t\t\tmessage\n\t\t\t\tpath\n\t\t\t}\n    }\n  }\n"];
 
 export function graphql(source: string) {
-  return (documents as any)[source] ?? {};
+	return (documents as any)[source] ?? {};
 }
 
-export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;
+export type DocumentType<TDocumentNode extends DocumentNode<any, any>> =
+	TDocumentNode extends DocumentNode<infer TType, any> ? TType : never;

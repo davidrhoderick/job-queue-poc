@@ -1,28 +1,36 @@
 import { useMutation, useQuery } from "@apollo/client/react";
 import { useEffect, useMemo, useState } from "react";
+import CreateQualificationForm from "~/components/CreateQualificationForm";
 import { graphql } from "~/gql";
 
-const TEST_OPERATION_STATUS = graphql(`
-  mutation TestOperationStatus($duration: Int!, $shouldFail: Boolean) {
-    testOperationStatus(input: {duration: $duration, shouldFail: $shouldFail}) {
+const SUBMISSION_STATUS = graphql(`
+  query SubmissionStatus($id: String!) {
+    submissionStatus(id: $id) {
       id
       status
-    }
-  }
-`);
-
-const OPERATION_STATUS = graphql(`
-  query OperationStatus($id: String!) {
-    operationStatus(id: $id) {
-      id
-      status
-      data {
-        anything
-      }
-      errors {
-        message
-        path
-      }
+			data {
+				primaryInsured {
+					firstName
+					lastName
+					fein
+				}
+				questionAnswers {
+					questionId
+					answer
+				}
+				coverageLocations {
+					state
+					streetAddress1
+					streetAddress2
+					city
+					zipCode
+				}
+					agencyId
+			}
+			errors {
+				message
+				path
+			}
     }
   }
 `);
@@ -30,8 +38,9 @@ const OPERATION_STATUS = graphql(`
 export default function Home() {
 	const [duration, setDuration] = useState(10);
 	const [shouldFail, setShouldFail] = useState(false);
+	const [id, setId] = useState<string | undefined>(undefined);
 
-	const [mutate, { data: mutationData }] = useMutation(TEST_OPERATION_STATUS);
+	// const [mutate, { data: mutationData }] = useMutation(TEST_OPERATION_STATUS);
 
 	const {
 		data: queryData,
@@ -39,22 +48,20 @@ export default function Home() {
 		error,
 		startPolling,
 		stopPolling,
-	} = useQuery(OPERATION_STATUS, {
-		skip: !mutationData?.testOperationStatus.id,
-		variables: { id: mutationData?.testOperationStatus.id ?? "no id to poll" },
+	} = useQuery(SUBMISSION_STATUS, {
+		skip: !id,
+		// @ts-expect-error we know this will be defined if we call it
+		variables: { id },
 	});
 
-	const status = useMemo(
-		() =>
-			queryData?.operationStatus.status ||
-			mutationData?.testOperationStatus.status,
-		[mutationData, queryData],
-	);
-
 	useEffect(() => {
-		if (status === "IN_PROGRESS" || status === "QUEUED") startPolling(1500);
+		if (
+			queryData?.submissionStatus?.status === "IN_PROGRESS" ||
+			queryData?.submissionStatus?.status === "QUEUED"
+		)
+			startPolling(1500);
 		else stopPolling();
-	}, [status, startPolling, stopPolling]);
+	}, [queryData?.submissionStatus?.status, startPolling, stopPolling]);
 
 	return (
 		<div>
@@ -88,13 +95,13 @@ export default function Home() {
 					/>
 					Should fail
 				</label>
-				<button
+				{/* <button
 					type="button"
 					onClick={() => mutate({ variables: { duration, shouldFail } })}
 					className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
 				>
 					Submit
-				</button>
+				</button> */}
 			</div>
 
 			<div className="p-4">
@@ -115,9 +122,9 @@ export default function Home() {
 									<span className="text-sm text-gray-500">Status</span>
 									<span
 										className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-											queryData.operationStatus.status === "SUCCESS"
+											queryData?.submissionStatus?.status === "SUCCESS"
 												? "bg-green-100 text-green-700"
-												: queryData.operationStatus.status === "FAIL"
+												: queryData?.submissionStatus?.status === "FAIL"
 													? "bg-red-100 text-red-700"
 													: "bg-yellow-100 text-yellow-700"
 										}`}
@@ -125,15 +132,18 @@ export default function Home() {
 										{status?.replace("_", " ")}
 									</span>
 								</div>
-								{queryData.operationStatus.data && (
+								{queryData?.submissionStatus?.data && (
 									<div className="text-sm text-gray-700">
-										Data: {queryData.operationStatus.data.anything}
+										Data:
+										<pre>
+											{JSON.stringify(queryData.submissionStatus.data, null, 2)}
+										</pre>
 									</div>
 								)}
-								{queryData.operationStatus.errors && (
+								{queryData?.submissionStatus?.errors && (
 									<div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">
 										<span className="font-medium">Errors:</span>{" "}
-										{queryData.operationStatus.errors
+										{queryData.submissionStatus.errors
 											.map((error) => error?.message)
 											.join(", ")}
 									</div>
@@ -147,6 +157,8 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
+
+			<CreateQualificationForm setId={setId} />
 		</div>
 	);
 }
