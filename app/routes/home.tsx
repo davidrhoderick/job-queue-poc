@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client/react";
 import { useEffect, useState } from "react";
 import CreateQualificationForm from "~/components/CreateQualificationForm";
-import Quote from "~/components/Quote";
+import FinalReview from "~/components/FinalReview";
 import UpdateAnswersForm from "~/components/UpdateAnswersForm";
 import UpdateLocationsForm from "~/components/UpdateLocations";
 import { graphql } from "~/gql";
@@ -154,7 +154,7 @@ export default function Home() {
 				/>
 			)}
 			{step === "QUOTE" && (
-				<Quote
+				<FinalReview
 					setId={setId}
 					transactionId={queryData?.submissionStatus?.data?.transactionId!}
 				/>
