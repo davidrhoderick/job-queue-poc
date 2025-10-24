@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client/react";
 import { useEffect, useState } from "react";
 import CreateQualificationForm from "~/components/CreateQualificationForm";
+import Quote from "~/components/Quote";
 import UpdateAnswersForm from "~/components/UpdateAnswersForm";
 import UpdateLocationsForm from "~/components/UpdateLocations";
 import { graphql } from "~/gql";
@@ -143,11 +144,17 @@ export default function Home() {
 			{step === "UPDATE_ANSWERS" && (
 				<UpdateAnswersForm
 					setId={setId}
-					transactionId={queryData?.submissionStatus?.data?.transactionId}
+					transactionId={queryData?.submissionStatus?.data?.transactionId!}
 				/>
 			)}
 			{step === "UPDATE_LOCATIONS" && (
 				<UpdateLocationsForm
+					setId={setId}
+					transactionId={queryData?.submissionStatus?.data?.transactionId!}
+				/>
+			)}
+			{step === "QUOTE" && (
+				<Quote
 					setId={setId}
 					transactionId={queryData?.submissionStatus?.data?.transactionId!}
 				/>
