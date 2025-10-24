@@ -9,6 +9,7 @@
 	"scripts": {
 		"dev:yoga": "tsx watch src/server.ts",
 		"dev:redis": "docker run -p 6379:6379 redis",
+		"dev:worker": "tsx watch src/lib/submissions-worker.ts",
 		"build": "tsc -p tsconfig.json",
 		"start": "node dist/server.js",
 		"codegen": "graphql-codegen --watch",
