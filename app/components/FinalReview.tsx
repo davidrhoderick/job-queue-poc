@@ -27,7 +27,7 @@ export default function FinalReview({
 
 	return (
 		<div className="max-w-3xl ml-4 p-4">
-			<h2 className="text-xl font-semibold mb-2">Final Review (look up!)</h2>
+			<h2 className="text-xl font-semibold mb-2">Final Review (see below)</h2>
 
 			<button
 				type="button"
