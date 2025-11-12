@@ -1,87 +1,44 @@
-# Welcome to React Router!
+# Job Queue POC
 
-A modern, production-ready template for building full-stack React applications using React Router.
+## Overview
+This repository is a proof of concept that demonstrates how a React front end can drive long-running workflows through a GraphQL API that hands work off to BullMQ and a dedicated worker. The React Router client (with Apollo Client) issues mutations for each underwriting step, the GraphQL Yoga server translates those requests into BullMQ jobs backed by Redis, and a BullMQ worker simulates the slow operations until results flow back to the UI through a polling `submissionStatus` query.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## Prerequisites and Local Setup
+Requirements:
+- Node.js 20+ and npm
+- Docker Desktop (or another Docker host) so Redis can run locally
 
-## Features
+Steps:
+1. Install dependencies: `npm install`
+2. Start the development stack: `npm run dev`
+   - The root `dev` script runs four processes concurrently: the React Router dev server, the GraphQL Yoga server (`npm run dev:yoga -w server`), a Redis container (`npm run dev:redis -w server` which executes `docker run -p 6379:6379 redis`), and the BullMQ worker (`npm run dev:worker -w server`).
+   - Visit `http://localhost:5173` for the UI and `http://localhost:3000/graphql` for the Yoga GraphQL endpoint. The Redis container stops when you terminate the dev script; rerun `npm run dev:redis -w server` if you want it running independently.
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## Architecture and File Structure
+Data flow:
+1. The React Router page in `app/routes/home.tsx` renders multi-step forms (`CreateQualificationForm`, `UpdateAnswersForm`, `UpdateLocationsForm`, `FinalReview`). Each form fires a GraphQL mutation defined via the generated `~/gql` helpers.
+2. GraphQL resolvers in `server/src/schema/submissionQueue/resolvers/**` validate the input, build deterministic BullMQ job IDs (`server/src/lib/build-job-id.ts`), enqueue work on the `submissions` queue (`server/src/lib/submissions-queue.ts`), and return an initial `SubmissionStatus`.
+3. The BullMQ worker (`server/src/lib/submissions-worker.ts`) consumes those jobs. It locks on the transaction ID so only one job per submission is handled at a time, introduces artificial delays to mimic real services, and resolves with synthetic policy data or a calculated premium.
+4. The UI polls `submissionStatus` (defined in `server/src/schema/submissionQueue/schema.graphql` and implemented via `server/src/lib/job-status.ts`) to know when work is queued, running, failed, or finished. Completed jobs stream their payload back to the client, which advances the workflow to the next step.
 
-## Getting Started
-
-### Installation
-
-Install the dependencies:
-
-```bash
-npm install
+Key directories:
+```
+app/                      React Router + Apollo client code
+  components/             Form steps that call GraphQL mutations
+  routes/home.tsx         Orchestrates the end-to-end flow and status polling
+  gql/                    Generated hooks and types from graphql-codegen
+server/
+  src/server.ts           Minimal GraphQL Yoga HTTP server
+  src/lib/
+    submissions-queue.ts  Queue configuration, Redis connection, helper utilities
+    submissions-worker.ts Long-running job handlers invoked by BullMQ Worker
+    job-status.ts         Maps BullMQ state to the SubmissionStatus GraphQL type
+    build-job-id.ts       Consistent job ID generation & dedupe helpers
+  src/schema/
+    submissionQueue/      SDL + resolvers for queue-related queries/mutations
+  src/generated/          Codegen output (typeDefs, resolvers, TypeScript types)
+codegen.ts                Root GraphQL Code Generator config for the client
+server/codegen.ts         Server-side GraphQL Code Generator config
 ```
 
-### Development
-
-Start the development server with HMR:
-
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+With this structure you can swap the fake delays and data builders for real downstream services while keeping the same contract between the React client, GraphQL API, and BullMQ job execution pipeline.
