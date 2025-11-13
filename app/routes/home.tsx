@@ -84,6 +84,28 @@ export default function Home() {
 
 	return (
 		<div>
+			{step === "CREATE_QUALIFICATION" && (
+				<CreateQualificationForm setId={setId} />
+			)}
+			{step === "UPDATE_ANSWERS" && (
+				<UpdateAnswersForm
+					setId={setId}
+					transactionId={queryData?.submissionStatus?.data?.transactionId!}
+				/>
+			)}
+			{step === "UPDATE_LOCATIONS" && (
+				<UpdateLocationsForm
+					setId={setId}
+					transactionId={queryData?.submissionStatus?.data?.transactionId!}
+				/>
+			)}
+			{step === "QUOTE" && (
+				<FinalReview
+					setId={setId}
+					transactionId={queryData?.submissionStatus?.data?.transactionId!}
+				/>
+			)}
+
 			<div className="p-4">
 				<div className="rounded-lg border border-gray-200 bg-white shadow-sm">
 					<div className="border-b border-gray-200 px-4 py-3">
@@ -137,28 +159,6 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
-
-			{step === "CREATE_QUALIFICATION" && (
-				<CreateQualificationForm setId={setId} />
-			)}
-			{step === "UPDATE_ANSWERS" && (
-				<UpdateAnswersForm
-					setId={setId}
-					transactionId={queryData?.submissionStatus?.data?.transactionId!}
-				/>
-			)}
-			{step === "UPDATE_LOCATIONS" && (
-				<UpdateLocationsForm
-					setId={setId}
-					transactionId={queryData?.submissionStatus?.data?.transactionId!}
-				/>
-			)}
-			{step === "QUOTE" && (
-				<FinalReview
-					setId={setId}
-					transactionId={queryData?.submissionStatus?.data?.transactionId!}
-				/>
-			)}
 		</div>
 	);
 }
